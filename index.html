@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Calculadora</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="styles.css">
+
+        <!-- Ícones -->
+        <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    </head>
+
+    <body>
+
+    <div class="app">
+
+        <!-- TOPO -->
+        <header class="topbar">
+
+            <div class="logo">
+                <i class="fa-solid fa-calculator"></i>
+                <span></span>
+            </div>
+
+            <div class="top-actions">
+
+                <!-- Histórico -->
+                <button
+                    class="icon-btn"
+                    onclick="toggleHistory()">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                </button>
+
+                <!-- Modos -->
+                <button
+                    class="icon-btn"
+                    id="modesButton"
+                    onclick="toggleModes()">
+
+                    <i class="fa-solid fa-calculator"></i>
+
+                </button>
+
+                <!-- Tema -->
+                <button
+                    class="icon-btn"
+                    id="themeToggle"
+                    onclick="toggleTheme()">
+
+                    <i class="fa-solid fa-moon"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- MENU -->
+        <div
+            class="modes-menu hidden"
+            id="modesMenu">
+
+            <button onclick="setMode('normal')">
+                Normal
+            </button>
+
+            <button onclick="setMode('currency')">
+                Conversão
+            </button>
+
+        </div>
+
+        <!-- HISTÓRICO -->
+        <aside
+            class="history-panel hidden"
+            id="historyPanel">
+
+            <div class="history-header">
+
+                <h3>Histórico</h3>
+
+                <div class="history-actions">
+
+                    <button onclick="clearHistory()">
+                        Limpar
+                    </button>
+
+                    <button
+                        class="close-history"
+                        onclick="toggleHistory()">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                class="history-list"
+                id="historyList">
+
+            </div>
+
+        </aside>
+
+        <!-- DISPLAY -->
+        <section class="display">
+
+            <!-- Normal -->
+            <div id="normalDisplay">
+
+                <div
+                    class="previous-operation"
+                    id="previousOperation">
+
+                </div>
+
+                <div
+                    class="current-operation"
+                    id="currentOperation">
+
+                    0
+
+                </div>
+
+            </div>
+
+            <!-- Conversão -->
+            <div
+                class="currency-display hidden"
+                id="currencyDisplay">
+
+                <!-- Superior -->
+                <div class="currency-line">
+
+                    <div class="currency-info">
+
+                        <span
+                            class="currency-value"
+                            id="currencyFromValue">
+
+                            0
+
+                        </span>
+
+                        <select id="fromCurrency" onchange="convertCurrency()">
+
+                            <option value="BRL">BRL</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="AUD">AUD</option>
+                            <option value="CAD">CAD</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- Meio -->
+                <div class="currency-switch">
+
+                    <i class="fa-solid fa-arrow-up-arrow-down"></i>
+
+                </div>
+
+                <!-- Inferior -->
+                <div class="currency-line">
+
+                    <div class="currency-info">
+
+                        <span
+                            class="currency-value"
+                            id="currencyToValue">
+
+                            0
+
+                        </span>
+
+                        <select id="toCurrency" onchange="convertCurrency()">
+
+                            <option value="USD">USD</option>
+                            <option value="BRL">BRL</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="AUD">AUD</option>
+                            <option value="CAD">CAD</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- BOTÕES -->
+        <section class="buttons">
+
+            <button onclick="deleteLast()">DEL</button>
+            <button onclick="clearCalculator()">AC</button>
+            <button onclick="calculatePercentage()">%</button>
+            <button onclick="appendOperator('/')">÷</button>
+
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="appendOperator('*')">×</button>
+
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="appendOperator('-')">-</button>
+
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendOperator('+')">+</button>
+
+            <button onclick="toggleSign()">+/-</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendDecimal()">.</button>
+            <button
+                class="equals"
+                onclick="calculateResult()">
+
+                =
+
+            </button>
+
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
