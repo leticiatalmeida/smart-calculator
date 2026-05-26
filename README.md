@@ -142,7 +142,7 @@ Without the extension: open `index.html` directly in your browser.
 
 <img src="https://img.shields.io/badge/Letícia_Almeida-Data_Science_Student-a855f7?style=for-the-badge&labelColor=f3e8ff&color=a855f7" />
 
-<br>
+<br><br>
 
 [![GitHub](https://img.shields.io/badge/GitHub-leticiatalmeida-faf5ff?style=flat-square&logo=github&logoColor=a855f7&labelColor=faf5ff)](https://github.com/leticiatalmeida)
 &nbsp;
