@@ -28,7 +28,7 @@
 <tr>
 <td width="42%" valign="center">
 
-<img src="./assets/demo.gif" alt="Smat Calculator Demo" width="95%" style="border-radius: 10px" />
+<img src="./assets/demo.gif" alt="Smat Calculator Demo" width="98%" style="border-radius: 10px" />
 
 </td>
 <td width="58%" valign="top">
