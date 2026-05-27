@@ -1,43 +1,36 @@
 // VARIÁVEIS
-let currentInput = ""
-let previousInput = ""
-let operator = ""
+
+let expression = ""
+let resultDisplayed = false
 
 let history = []
 
-let shouldResetScreen = false
+let exchangeRates = {}
+
 
 // DISPLAY
+
 function updateDisplay(){
 
     document.getElementById("currentOperation").innerHTML =
-        currentInput || "0"
+        expression || "0"
 
-    document.getElementById("previousOperation").innerHTML =
-        previousInput
-
-    if(
-        !document
-            .getElementById("currencyDisplay")
-            .classList.contains("hidden")
-    ){
-
-        convertCurrency()
-    }
 }
+
 
 // NÚMEROS
+
 function appendNumber(number){
 
-    //se acabou de calcular,
-    //inicia uma nova conta automaticamente
-    if(shouldResetScreen){
+    if(resultDisplayed){
 
-        currentInput = ""
-        shouldResetScreen = false
+        expression = ""
+        resultDisplayed = false
+
+        document.getElementById("previousOperation").innerHTML = ""
     }
-    
-    currentInput += number
+
+    expression += number
 
     updateDisplay()
 
@@ -50,167 +43,180 @@ function appendNumber(number){
         convertCurrency()
     }
 }
+
 
 // DECIMAL
+
 function appendDecimal(){
 
-    if(shouldResetScreen){
+    const parts =
+        expression.split(/[\+\-\*\/]/)
 
-        currentInput = "0"
-        shouldResetScreen = false
-    }
-    
-    if(currentInput.includes(".")){
+    const lastPart =
+        parts[parts.length - 1]
+
+    if(lastPart.includes(".")){
 
         return
     }
 
-    if(currentInput === ""){
+    if(expression === ""){
 
-        currentInput = "0"
+        expression = "0"
     }
 
-    currentInput += "."
+    expression += "."
 
     updateDisplay()
 }
 
-// OPERADOR
+
+// OPERADORES
+
 function appendOperator(selectedOperator){
 
-    if(currentInput === ""){
+    if(expression === ""){
 
         return
     }
 
-    if(previousInput !== ""){
+    const lastChar =
+        expression.trim().slice(-1)
 
-        calculateResult()
+    if(["+", "-", "*", "/"].includes(lastChar)){
+
+        expression =
+            expression.trim().slice(0, -1)
     }
 
-    operator = selectedOperator
+    expression += ` ${selectedOperator} `
 
-    previousInput =
-        currentInput + " " + operator
-
-    currentInput = ""
+    resultDisplayed = false
 
     updateDisplay()
 }
+
 
 // RESULTADO
+
 function calculateResult(){
 
-    if(previousInput === "" || currentInput === ""){
+    if(expression === ""){
 
         return
     }
-    
-    const previous =
-        Number(previousInput.replace(operator, ""))
 
-    const current =
-        Number(currentInput)
+    try{
 
-    let result = 0
+        const formattedExpression =
 
-    if(operator === "+"){
+            expression
+                .replace(/×/g, "*")
+                .replace(/÷/g, "/")
 
-        result = previous + current
+        const result =
+            eval(formattedExpression)
+
+        const calculation =
+            `${expression} = ${result}`
+
+        addToHistory(calculation)
+
+        document
+            .getElementById("previousOperation")
+            .innerHTML =
+            `${expression} =`
+
+        expression =
+            result.toString()
+
+        resultDisplayed = true
+
+        updateDisplay()
+
     }
 
-    if(operator === "-"){
+    catch{
 
-        result = previous - current
-    }
+        expression = "Erro"
 
-    if(operator === "*"){
-
-        result = previous * current
-    }
-
-    if(operator === "/"){
-
-        result = previous / current
-    }
-
-    const calculation =
-
-        previous +
-        " " +
-        operator +
-        " " +
-        current +
-        " = " +
-        result
-
-    addToHistory(calculation)
-
-    previousInput =
-        previous +
-        " " +
-        operator +
-        " " +
-        current +
-        " ="
-
-    currentInput =
-        result.toString()
-
-        shouldResetScreen = true
-
-    previousInput = ""
-    operator = ""
-
-    updateDisplay()
-
-    if(
-        !document
-            .getElementById("currencyDisplay")
-            .classList.contains("hidden")
-    ){
-        convertCurrency()
+        updateDisplay()
     }
 }
+
 
 // LIMPAR
+
 function clearCalculator(){
 
-    currentInput = ""
-    previousInput = ""
-    operator = ""
+    expression = ""
+    resultDisplayed = false
+
+    document
+        .getElementById("previousOperation")
+        .innerHTML = ""
 
     updateDisplay()
+    convertCurrency()
 }
+
 
 // APAGAR
+
 function deleteLast(){
 
-    currentInput =
-        currentInput.slice(0, -1)
+    expression =
+        expression.slice(0, -1)
 
     updateDisplay()
+    convertCurrency()
 }
+
 
 // PORCENTAGEM
+
 function calculatePercentage(){
 
-    currentInput =
-        (Number(currentInput) / 100).toString()
+    try{
 
-    updateDisplay()
+        expression =
+            (eval(expression) / 100).toString()
+
+        updateDisplay()
+    }
+
+    catch{
+
+        expression = "Erro"
+
+        updateDisplay()
+    }
 }
 
-// POSITIVO/NEGATIVO
+
+// POSITIVO / NEGATIVO
+
 function toggleSign(){
 
-    currentInput =
-        (Number(currentInput) * -1).toString()
+    try{
 
-    updateDisplay()
+        expression =
+            (eval(expression) * -1).toString()
+
+        updateDisplay()
+    }
+
+    catch{
+
+        expression = "Erro"
+
+        updateDisplay()
+    }
 }
 
+
 // HISTÓRICO
+
 function addToHistory(calculation){
 
     history.unshift(calculation)
@@ -246,7 +252,9 @@ function toggleHistory(){
         .classList.toggle("hidden")
 }
 
+
 // MODOS
+
 function toggleModes(){
 
     document
@@ -256,8 +264,9 @@ function toggleModes(){
 
 function setMode(mode){
 
-    const currentOperation = document.getElementById("currentOperation")
-    
+    const currentOperation =
+        document.getElementById("currentOperation")
+
     if(mode === "currency"){
 
         currentOperation.classList.add("hidden")
@@ -283,7 +292,9 @@ function setMode(mode){
         .classList.add("hidden")
 }
 
+
 // TEMA
+
 function toggleTheme(){
 
     document.body.classList.toggle("light-mode")
@@ -304,11 +315,53 @@ function toggleTheme(){
     }
 }
 
+
+// API DE MOEDAS
+
+async function fetchExchangeRates(){
+
+    try{
+
+        const response = await fetch(
+            "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,GBP-BRL,JPY-BRL,AUD-BRL,CAD-BRL"
+        )
+
+        const data = await response.json()
+
+        exchangeRates = {
+
+            BRL: 1,
+
+            USD: Number(data.USDBRL.bid),
+
+            EUR: Number(data.EURBRL.bid),
+
+            GBP: Number(data.GBPBRL.bid),
+
+            JPY: Number(data.JPYBRL.bid),
+
+            AUD: Number(data.AUDBRL.bid),
+
+            CAD: Number(data.CADBRL.bid)
+        }
+
+        convertCurrency()
+
+    }
+
+    catch(error){
+
+        console.log("Erro ao buscar moedas:", error)
+    }
+}
+
+
 // CONVERSÃO
+
 function convertCurrency(){
 
     const amount =
-        Number(currentInput) || 0
+        Number(eval(expression || 0)) || 0
 
     const from =
         document.getElementById("fromCurrency").value
@@ -316,22 +369,16 @@ function convertCurrency(){
     const to =
         document.getElementById("toCurrency").value
 
-    const rates = {
+    if(!exchangeRates[from] || !exchangeRates[to]){
 
-        BRL: 1,
-        USD: 5.42,
-        EUR: 6.10,
-        GBP: 7.20,
-        JPY: 0.038,
-        AUD: 3.55,
-        CAD: 3.95
+        return
     }
 
     const amountInBRL =
-        amount * rates[from]
+        amount * exchangeRates[from]
 
     const converted =
-        amountInBRL / rates[to]
+        amountInBRL / exchangeRates[to]
 
     document.getElementById("currencyFromValue").innerHTML =
         amount.toFixed(2)
@@ -340,17 +387,73 @@ function convertCurrency(){
         converted.toFixed(2)
 }
 
+
+// TROCAR MOEDAS
+
+function swapCurrencies(){
+
+    const fromSelect =
+        document.getElementById("fromCurrency")
+
+    const toSelect =
+        document.getElementById("toCurrency")
+
+    const switchIcon =
+        document.querySelector(".currency-switch i")
+
+    if(!fromSelect || !toSelect){
+
+        return
+    }
+
+    switchIcon.style.transform =
+        "rotate(180deg)"
+
+    const currentFrom =
+        fromSelect.value
+
+    fromSelect.value =
+        toSelect.value
+
+    toSelect.value =
+        currentFrom
+
+    convertCurrency()
+
+    setTimeout(() => {
+
+        switchIcon.style.transform =
+            "rotate(0deg)"
+
+    }, 400)
+}
+
+
+// FECHAR MENU AO CLICAR FORA
+
 document.addEventListener("click", function(event){
-    const menu = document.getElementById("modesMenu")
 
-    const button = document.getElementById("modesButton")
+    const menu =
+        document.getElementById("modesMenu")
 
-    const clickedInsideMenu = menu.contains(event.target)
+    const button =
+        document.getElementById("modesButton")
 
-    const clickedButton = button.contains(event.target)
+    const clickedInsideMenu =
+        menu.contains(event.target)
+
+    const clickedButton =
+        button.contains(event.target)
 
     if(!clickedInsideMenu && !clickedButton){
 
         menu.classList.add("hidden")
     }
 })
+
+
+// INICIALIZAÇÃO
+
+fetchExchangeRates()
+
+updateDisplay()
